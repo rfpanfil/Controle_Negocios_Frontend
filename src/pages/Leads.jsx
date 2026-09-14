@@ -71,8 +71,8 @@ const Leads = () => {
     }
   };
 
-  const fetchLeads = async () => {
-    setLoading(true);
+  const fetchLeads = async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       const params = {};
       if (search) params.search = search;
@@ -379,7 +379,7 @@ const Leads = () => {
           leadId={selectedLeadId} 
           onClose={() => {
             setDetalheModalOpen(false);
-            fetchLeads();
+            fetchLeads(true);
           }} 
         />
       )}
