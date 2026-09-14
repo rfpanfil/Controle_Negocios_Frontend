@@ -22,8 +22,23 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+function convertUTC(obj) {
+  if (obj === null || typeof obj !== 'object') return obj;
+  for (const key of Object.keys(obj)) {
+    if (typeof obj[key] === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?$/.test(obj[key])) {
+      obj[key] += 'Z';
+    } else if (typeof obj[key] === 'object') {
+      convertUTC(obj[key]);
+    }
+  }
+  return obj;
+}
+
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    convertUTC(response.data);
+    return response;
+  },
   (error) => {
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('cn_token');
