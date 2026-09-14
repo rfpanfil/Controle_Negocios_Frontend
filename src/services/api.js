@@ -29,7 +29,9 @@ api.interceptors.response.use(
       localStorage.removeItem('cn_token');
       localStorage.removeItem('cn_user');
       localStorage.removeItem('cn_perms');
-      window.location.href = '/login';
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }
