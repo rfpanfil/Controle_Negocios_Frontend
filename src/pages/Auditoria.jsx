@@ -11,11 +11,24 @@ function RenderJSON({ str }) {
       <div style={{ fontSize: '0.78rem', background: 'var(--bg-secondary)', padding: '6px', borderRadius: '4px' }}>
         {Object.entries(obj)
           .filter(([key]) => key !== 'senha_hash')
-          .map(([key, val]) => (
-            <div key={key} style={{ wordBreak: 'break-all' }}>
-              <strong style={{ color: 'var(--text-secondary)' }}>{key}:</strong> {String(val)}
-            </div>
-          ))}
+          .map(([key, val]) => {
+            let displayVal = String(val);
+            if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(val)) {
+               let dStr = val;
+               if (!dStr.endsWith('Z') && !dStr.includes('+')) {
+                  dStr += 'Z';
+               }
+               const d = new Date(dStr);
+               if (!isNaN(d)) {
+                 displayVal = format(d, 'dd/MM/yyyy HH:mm:ss');
+               }
+            }
+            return (
+              <div key={key} style={{ wordBreak: 'break-all' }}>
+                <strong style={{ color: 'var(--text-secondary)' }}>{key}:</strong> {displayVal}
+              </div>
+            );
+          })}
       </div>
     );
   } catch (e) {
